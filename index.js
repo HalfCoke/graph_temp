@@ -1414,7 +1414,9 @@ function yanse(obj, color) {
         borderColor: color
     };
     obj.label = {
-        color:color
+        color:color,
+        fontWeight:'bold',
+        fontSize: 14
     }
 
     if (obj.children && obj.children.length !== 0){
@@ -1457,8 +1459,8 @@ myChart.setOption(
             {
                 type: 'tree',
                 data: [data],
-                top: '1%',
-                bottom: '1%',
+                top: '-8%',
+                bottom: '-8%',
                 layout: 'radial',
                 symbol: 'emptyCircle',
                 // symbolKeepAspect: 'true',
@@ -1469,6 +1471,7 @@ myChart.setOption(
                 emphasis: {
                     focus: 'relative'
                 },
+
                 // lineStyle:{
                 //     color: '#5470c6'
                 // }
