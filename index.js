@@ -1450,19 +1450,24 @@ myChart.setOption(
             trigger: 'item',
             triggerOn: 'mousemove'
         },
+        // dataZoom:[
+        //     {filterMode: 'empty'}
+        // ],
         series: [
             {
                 type: 'tree',
                 data: [data],
-                top: '18%',
-                bottom: '14%',
+                top: '1%',
+                bottom: '1%',
                 layout: 'radial',
                 symbol: 'emptyCircle',
-                symbolSize: 7,
+                // symbolKeepAspect: 'true',
+                roam: true,
+                symbolSize: 8,
                 initialTreeDepth: 3,
                 animationDurationUpdate: 750,
                 emphasis: {
-                    focus: 'descendant'
+                    focus: 'relative'
                 },
                 // lineStyle:{
                 //     color: '#5470c6'
