@@ -44,7 +44,7 @@ function getValue(obj) {
             right += getValue(obj.children[i])
         }
     }
-    obj.right = parseInt(getBaseLog(3, right)) * 3
+    obj.right = parseInt(getBaseLog(3, right)) * 5
     return right;
 }
 
