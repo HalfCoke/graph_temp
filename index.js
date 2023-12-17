@@ -34,7 +34,9 @@ function getBaseLog(x, y) {
 
 function getValue(obj) {
     let right = 0;
-    if (obj.name.indexOf('重点实验室') !== -1 || obj.name.indexOf('前沿科学中心') !== -1) {
+    if (obj.name.indexOf('国家重点实验室') !== -1 || obj.name.indexOf('前沿科学中心') !== -1) {
+        right = 10
+    } else if (obj.name.indexOf('教育部重点实验室') !== -1) {
         right = 6
     } else {
         right = 3
@@ -44,7 +46,7 @@ function getValue(obj) {
             right += getValue(obj.children[i])
         }
     }
-    obj.right = parseInt(getBaseLog(3, right)) * 5
+    obj.right = parseInt(getBaseLog(3, right)) * 4
     return right;
 }
 
@@ -114,9 +116,9 @@ $.get('./all_data.json', function (data) {
                     emphasis: {
                         focus: 'relative'
                     },
-                    labelLayout: {
-                        hideOverlap: true
-                    },
+                    // labelLayout: {
+                    //     hideOverlap: true
+                    // },
                 }
             ],
         })
