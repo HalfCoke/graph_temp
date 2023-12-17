@@ -34,10 +34,10 @@ function getBaseLog(x, y) {
 
 function getValue(obj) {
     let right = 0;
-    if (obj.name.indexOf('国家重点实验室') !== -1 || obj.name.indexOf('前沿科学中心') !== -1) {
+    if (obj.name.indexOf('全国重点实验室') !== -1 || obj.name.indexOf('前沿科学中心') !== -1) {
         right = 10
     } else if (obj.name.indexOf('教育部重点实验室') !== -1) {
-        right = 6
+        right = 7
     } else {
         right = 3
     }
