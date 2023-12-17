@@ -32,24 +32,29 @@ function getBaseLog(x, y) {
     return Math.log(y) / Math.log(x)
 }
 
-function getValue(root) {
-    let value = 0;
-    if (root.name.indexOf('重点实验室') !== -1 || root.name.indexOf('前沿科学中心') !== -1) {
-        value = 6
+function getValue(obj) {
+    let right = 0;
+    if (obj.name.indexOf('重点实验室') !== -1 || obj.name.indexOf('前沿科学中心') !== -1) {
+        right = 6
     } else {
-        value = 3
+        right = 3
     }
-    if (root.children && root.children.length !== 0) {
-        for (let i = 0; i < root.children.length; i++) {
-            value += getValue(root.children[i])
+    if (obj.children && obj.children.length !== 0) {
+        for (let i = 0; i < obj.children.length; i++) {
+            right += getValue(obj.children[i])
         }
     }
-    root.value = parseInt(getBaseLog(3, value)) * 2
-    return value;
+    obj.right = parseInt(getBaseLog(3, right)) * 3
+    return right;
 }
 
 function symbolSize(obj) {
-    obj.symbolSize = 18
+    obj.symbolSize = obj.right
+    if (obj.children && obj.children.length !== 0) {
+        for (let i = 0; i < obj.children.length; i++) {
+            symbolSize(obj.children[i])
+        }
+    }
 }
 
 
@@ -77,7 +82,7 @@ $.get('./all_data.json', function (data) {
     yanse(data.children[10], '#40b492');
     yanse(data.children[11], '#9038ab');
 
-    // getValue(data)
+    getValue(data)
     console.log(data)
     symbolSize(data)
 
