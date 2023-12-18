@@ -25,6 +25,7 @@ function getValue(obj) {
 function size(obj) {
     obj.size = obj.right
     obj.value = obj.right
+    obj.id = obj.name
     if (obj.children && obj.children.length !== 0) {
         for (let i = 0; i < obj.children.length; i++) {
             size(obj.children[i])
@@ -42,6 +43,21 @@ var option;
 
 let twoOption = {};
 
+let color = [
+    '#4B67B8',
+    '#F5C15F',
+    '#48946A',
+    '#DB7AC1',
+    '#DF645F',
+    '#90C173',
+    '#73B6D6',
+    '#895BA6',
+    '#F07F52',
+    '#c09f7e',
+    '#ef6364',
+    '#778ccc'
+
+]
 $.get(
     DATA_PATH,
     function (data) {
@@ -49,7 +65,7 @@ $.get(
             return [
                 {
                     itemStyle: {
-                        borderColor: '#c2c2c2',
+                        // borderColor: '#c2c2c2',
                         borderWidth: 0,
                         gapWidth: 1
                     },
@@ -59,26 +75,22 @@ $.get(
                 },
                 {
                     itemStyle: {
-                        // borderColor: 'rgb(80,80,80)',
                         borderColorSaturation: 0.8,
-                        borderWidth: 2,
+                        borderWidth: 5,
                         gapWidth: 1
+                    },
+                    upperLabel: {
+                        show: true,
+                        height: 20
                     }
                 },
                 {
-                    colorSaturation: [0.6, 0.7],
                     itemStyle: {
-                        borderWidth: 2,
-                        // borderColor: 'rgb(155,155,155)',
-                        gapWidth: 1,
                         borderColorSaturation: 0.7
                     }
                 },
                 {
-                    // colorSaturation: [0.35, 0.5],
                     itemStyle: {
-                        borderWidth: 2,
-                        gapWidth: 1,
                         borderColorSaturation: 0.6
                     }
                 }
@@ -88,7 +100,22 @@ $.get(
         size(data)
         console.log(data)
         const treemapOption = {
-            leafDepth: 2,
+            color: [
+                '#4B67B8',
+                '#F5C15F',
+                '#48946A',
+                '#DB7AC1',
+                '#DF645F',
+                '#90C173',
+                '#73B6D6',
+                '#895BA6',
+                '#F07F52',
+                '#c09f7e',
+                '#ef6364',
+                '#778ccc'
+
+            ],
+            colorMappingBy: 'id',
             series: [
                 {
                     type: 'treemap',
@@ -102,17 +129,16 @@ $.get(
                     label: {
                         show: true,
                         overflow: 'break',
-                        align: 'center',
+                        align: 'left',
                         padding: 1,
                         fontsize: 10,
-                        position: 'inside'
+                        position: 'left'
                     },
                     breadcrumb: {
                         show: false
                     },
                     upperLabel: {
-                        show: true,
-                        height: 30
+                        show: false
                     },
                     levels: getLevelOption(),
                 }
@@ -123,6 +149,20 @@ $.get(
                 trigger: 'item',
                 triggerOn: 'mousemove'
             },
+            color: [
+                '#778ccc',
+                '#4B67B8',
+                '#F5C15F',
+                '#DB7AC1',
+                '#48946A',
+                '#ef6364',
+                '#90C173',
+                '#73B6D6',
+                '#895BA6',
+                '#F07F52',
+                '#c09f7e',
+                '#DF645F',
+            ],
             series: [
                 {
                     type: 'sunburst',
@@ -153,7 +193,7 @@ $.get(
 
         twoOption.treemapOption = treemapOption
         twoOption.sunburstOption = sunburstOption
-        let currentOption = treemapOption;
+        let currentOption = sunburstOption;
         myChart.setOption(currentOption);
         // setInterval(function () {
         //     currentOption =
