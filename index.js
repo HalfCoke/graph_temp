@@ -1,33 +1,3 @@
-function yanse(obj, color) {
-    obj.itemStyle = {
-        color: color,
-        borderColor: color
-    };
-    obj.lineStyle = {
-        color: color,
-        borderColor: color
-    };
-    obj.label = {
-        color: color,
-        fontWeight: 'bold',
-        fontSize: 14
-    }
-
-    if (obj.children && obj.children.length !== 0) {
-        for (var i = 0; i < obj.children.length; i++) {
-            obj.children[i].itemStyle = {
-                color: color,
-                borderColor: color
-            };
-            obj.children[i].lineStyle = {
-                color: color,
-                borderColor: color
-            };
-            yanse(obj.children[i], color)
-        }
-    }
-}
-
 function getBaseLog(x, y) {
     return Math.log(y) / Math.log(x)
 }
@@ -35,101 +5,104 @@ function getBaseLog(x, y) {
 function getValue(obj) {
     let right = 0;
     if (obj.name.indexOf('全国重点实验室') !== -1 || obj.name.indexOf('前沿科学中心') !== -1) {
-        right = 10
+        right = 8
     } else if (obj.name.indexOf('教育部重点实验室') !== -1) {
-        right = 7
+        right = 4
     } else {
-        right = 3
+        right = 4
     }
     if (obj.children && obj.children.length !== 0) {
         for (let i = 0; i < obj.children.length; i++) {
             right += getValue(obj.children[i])
         }
     }
-    obj.right = parseInt(getBaseLog(3, right)) * 4
+    obj.right = right
     return right;
 }
 
-function symbolSize(obj) {
-    obj.symbolSize = obj.right
+function size(obj) {
+    obj.size = obj.right
+    obj.value = obj.right
     if (obj.children && obj.children.length !== 0) {
         for (let i = 0; i < obj.children.length; i++) {
-            symbolSize(obj.children[i])
+            size(obj.children[i])
         }
     }
 }
 
 
-var dom = document.getElementById('chart-container');
-var myChart = echarts.init(dom, null, {
-    renderer: 'canvas',
-    useDirtyRect: false
-});
+
+var DATA_PATH = './all_data.json';
+
+var chartDom = document.getElementById('chart-container');
+var myChart = echarts.init(chartDom);
 var option;
 
 
-$.get('./all_data.json', function (data) {
-    yanse(data.children[0], '#cb351d');
-    yanse(data.children[1], '#cc6923');
-    yanse(data.children[2], '#cc9930');
-    yanse(data.children[3], '#d7c13b');
-    yanse(data.children[4], '#3da82c');
-    yanse(data.children[5], '#1458b2');
-
-
-    yanse(data.children[6], '#d04e20');
-    yanse(data.children[7], '#d2832c');
-    yanse(data.children[8], '#d5b739');
-    yanse(data.children[9], '#b4d038');
-    yanse(data.children[10], '#40b492');
-    yanse(data.children[11], '#9038ab');
-
-    getValue(data)
-    console.log(data)
-    symbolSize(data)
-
-
-    var cate = data.children.map(function (a) {
-        return {name: a.name};
-    })
-
-    myChart.setOption(
-        (option = {
+$.get(
+    DATA_PATH,
+    function (data) {
+        getValue(data)
+        size(data)
+        console.log(data)
+        const treemapOption = {
+            series: [
+                {
+                    type: 'treemap',
+                    id: 'echarts-package-size',
+                    animationDurationUpdate: 1000,
+                    roam: false,
+                    nodeClick: undefined,
+                    data: data.children,
+                    universalTransition: true,
+                    label: {
+                        show: true,
+                        overflow: 'truncate'
+                    },
+                    breadcrumb: {
+                        show: false
+                    }
+                }
+            ]
+        };
+        const sunburstOption = {
             tooltip: {
                 trigger: 'item',
                 triggerOn: 'mousemove'
             },
             series: [
                 {
-                    type: 'tree',
-                    data: [data],
-                    top: '-8%',
-                    bottom: '-8%',
-                    layout: 'radial',
-                    symbol: 'emptyCircle',
-                    // symbolKeepAspect: 'true',
-                    categories: cate,
+                    type: 'sunburst',
+                    id: 'echarts-package-size',
+                    radius: ['20%', '90%'],
+                    animationDurationUpdate: 1000,
+                    nodeClick: 'rootToNode',
+                    data: data.children,
+                    universalTransition: true,
                     roam: true,
-                    symbolSize: 10,
-                    initialTreeDepth: 2,
-                    animationDurationUpdate: 750,
-                    emphasis: {
-                        focus: 'relative'
+                    itemStyle: {
+                        borderWidth: 1,
+                        borderColor: 'rgba(255,255,255,.5)'
                     },
-                    // labelLayout: {
-                    //     hideOverlap: true
-                    // },
+                    label: {
+                        show: true,
+                        minAngle: 3
+                    },
+                    labelLayout: {
+                        hideOverlap: true
+                    },
+
                 }
-            ],
-        })
-    );
+            ]
+        };
+        let currentOption = treemapOption;
+        myChart.setOption(currentOption);
+        setInterval(function () {
+            currentOption =
+                currentOption === treemapOption ? sunburstOption : treemapOption;
+            myChart.setOption(currentOption);
+        }, 3000);
+    }
+);
 
-
-})
-
-
-if (option && typeof option === 'object') {
-    myChart.setOption(option);
-}
-
-window.addEventListener('resize', myChart.resize);
+option && myChart.setOption(option);
