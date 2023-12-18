@@ -4,22 +4,43 @@ function getBaseLog(x, y) {
 
 function getValue(obj) {
     let right = 0;
+    let nation = 0
+    let fsc = 0
+    let moe = 0
+    let eng = 0
     if (obj.name.indexOf('全国重点实验室') !== -1 || obj.name.indexOf('前沿科学中心') !== -1) {
-        right = 20
+        right = 12
+        if (obj.name.indexOf('全国重点实验室') !== -1) {
+            nation = 1
+        }
+        if (obj.name.indexOf('前沿科学中心') !== -1) {
+            fsc = 1
+        }
     } else if (obj.name.indexOf('教育部重点实验室') !== -1) {
         right = 8
+        moe = 1
     } else if (obj.name.indexOf('工程研究中心') !== -1) {
-        right = 2
+        right = 8
+        eng = 1
     } else {
-        right = 2
+        right = 15
     }
     if (obj.children && obj.children.length !== 0) {
         for (let i = 0; i < obj.children.length; i++) {
-            right += getValue(obj.children[i])
+            let o = getValue(obj.children[i])
+            right += o.right
+            nation += o.nation&&o.nation>0 ? o.nation : 0
+            fsc += o.fsc
+            moe += o.moe
+            eng += o.eng
         }
     }
     obj.right = right
-    return right;
+    obj.fsc = fsc
+    obj.nation = nation
+    obj.eng = eng
+    obj.moe = moe
+    return obj;
 }
 
 function size(obj) {
@@ -32,7 +53,6 @@ function size(obj) {
         }
     }
 }
-
 
 
 var DATA_PATH = './all_data.json';
@@ -56,7 +76,6 @@ let color = [
     '#c09f7e',
     '#ef6364',
     '#778ccc'
-
 ]
 $.get(
     DATA_PATH,
@@ -96,8 +115,33 @@ $.get(
                 }
             ];
         }
+
+        function getTooltipFormatter(params) {
+            let resultHtml = ''
+            resultHtml += params.data.name
+            if (params.data.name.indexOf('全国重点实验室') === -1
+                && params.data.name.indexOf('前沿科学中心') === -1
+                && params.data.name.indexOf('教育部重点实验室') === -1
+                && params.data.name.indexOf('工程研究中心') === -1) {
+                if (params.data.nation > 0) {
+                    resultHtml += '<br>全国重点实验室：' + params.data.nation
+                }
+                if (params.data.fsc > 0) {
+                    resultHtml += '<br>前沿科学中心：' + params.data.fsc
+                }
+                if (params.data.moe > 0) {
+                    resultHtml += '<br>教育部重点实验室：' + params.data.moe
+                }
+                if (params.data.eng > 0) {
+                    resultHtml += '<br>工程研究中心：' + params.data.eng
+                }
+            }
+            return resultHtml
+        }
+
         getValue(data)
         size(data)
+        console.log('data:')
         console.log(data)
         const treemapOption = {
             color: [
@@ -113,7 +157,6 @@ $.get(
                 '#c09f7e',
                 '#ef6364',
                 '#778ccc'
-
             ],
             colorMappingBy: 'id',
             series: [
@@ -141,6 +184,9 @@ $.get(
                         show: false
                     },
                     levels: getLevelOption(),
+                    tooltip: {
+                        formatter: (params) => getTooltipFormatter(params)
+                    }
                 }
             ]
         };
@@ -186,7 +232,9 @@ $.get(
                     labelLayout: {
                         hideOverlap: true
                     },
-
+                    tooltip: {
+                        formatter: (params) => getTooltipFormatter(params)
+                    }
                 }
             ]
         };
@@ -205,11 +253,11 @@ $.get(
 );
 
 option && myChart.setOption(option);
-let currentOption =  twoOption.treemapOption;
-$(document).ready(function (){
-    $(document).on("dblclick",function (event){
+let currentOption = twoOption.treemapOption;
+$(document).ready(function () {
+    $(document).on("dblclick", function (event) {
         currentOption =
-                currentOption === twoOption.treemapOption ? twoOption.sunburstOption : twoOption.treemapOption;
+            currentOption === twoOption.treemapOption ? twoOption.sunburstOption : twoOption.treemapOption;
         myChart.setOption(currentOption);
     })
 })
