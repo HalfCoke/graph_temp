@@ -5,11 +5,13 @@ function getBaseLog(x, y) {
 function getValue(obj) {
     let right = 0;
     if (obj.name.indexOf('全国重点实验室') !== -1 || obj.name.indexOf('前沿科学中心') !== -1) {
-        right = 8
+        right = 20
     } else if (obj.name.indexOf('教育部重点实验室') !== -1) {
-        right = 4
+        right = 8
+    } else if (obj.name.indexOf('工程研究中心') !== -1) {
+        right = 2
     } else {
-        right = 4
+        right = 2
     }
     if (obj.children && obj.children.length !== 0) {
         for (let i = 0; i < obj.children.length; i++) {
@@ -86,7 +88,9 @@ $.get(
                     },
                     label: {
                         show: true,
-                        minAngle: 3
+                        minAngle: 3,
+                        overflow: 'truncate',
+                        width: 100
                     },
                     labelLayout: {
                         hideOverlap: true
@@ -95,7 +99,7 @@ $.get(
                 }
             ]
         };
-        let currentOption = treemapOption;
+        let currentOption = sunburstOption;
         myChart.setOption(currentOption);
         setInterval(function () {
             currentOption =
