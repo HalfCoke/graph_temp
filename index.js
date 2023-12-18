@@ -172,13 +172,13 @@ $.get(
                     zoomToNodeRatio: 0.64*0.64,
                     data: data.children,
                     universalTransition: true,
-                    visibleMin: 300,
+                    visibleMin: 5000,
                     label: {
                         show: true,
                         overflow: 'break',
                         align: 'left',
                         padding: 1,
-                        fontsize: 10,
+                        fontSize: '14',
                         position: 'left'
                     },
                     breadcrumb: {
@@ -188,7 +188,7 @@ $.get(
                     upperLabel: {
                         show: false
                     },
-                    leafDepth: 3,
+                    // leafDepth: 3,
                     levels: getLevelOption(),
                     tooltip: {
                         formatter: (params) => getTooltipFormatter(params)
