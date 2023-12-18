@@ -96,7 +96,7 @@ $.get(
                     itemStyle: {
                         borderColorSaturation: 0.8,
                         borderWidth: 5,
-                        gapWidth: 1
+                        gapWidth: 4
                     },
                     upperLabel: {
                         show: true,
@@ -105,7 +105,9 @@ $.get(
                 },
                 {
                     itemStyle: {
-                        borderColorSaturation: 0.7
+                        borderColorSaturation: 0.7,
+                        borderWidth: 5,
+                        gapWidth: 2
                     }
                 },
                 {
@@ -162,10 +164,12 @@ $.get(
             series: [
                 {
                     type: 'treemap',
+                    name: '农学',
                     id: 'echarts-package-size',
                     animationDurationUpdate: 1000,
                     roam: true,
-                    // nodeClick: undefined,
+                    nodeClick: 'zoomToNode',
+                    zoomToNodeRatio: 0.64*0.64,
                     data: data.children,
                     universalTransition: true,
                     visibleMin: 300,
@@ -178,11 +182,13 @@ $.get(
                         position: 'left'
                     },
                     breadcrumb: {
-                        show: false
+                        show: true,
+                        left: 'center'
                     },
                     upperLabel: {
                         show: false
                     },
+                    leafDepth: 3,
                     levels: getLevelOption(),
                     tooltip: {
                         formatter: (params) => getTooltipFormatter(params)
@@ -197,17 +203,17 @@ $.get(
             },
             color: [
                 '#778ccc',
-                '#4B67B8',
                 '#F5C15F',
-                '#DB7AC1',
+                '#4B67B8',
                 '#48946A',
-                '#ef6364',
+                '#DB7AC1',
+                '#DF645F',
                 '#90C173',
                 '#73B6D6',
                 '#895BA6',
                 '#F07F52',
                 '#c09f7e',
-                '#DF645F',
+                '#ef6364',
             ],
             series: [
                 {
